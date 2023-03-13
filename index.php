@@ -46,58 +46,38 @@
 	$data = file_get_contents($url); // put the contents of the file into a variable
 	$movies = json_decode($data, true);
 
-	$count_movies = count($movies);
-	$genre_list = [];
+	$newArray = [];
+	$total_movies = [];
 
 	// We put all the categories together in an arrangement.
 	foreach($movies as $list) {
 		foreach($list["genre"] as $genre) {
-			$genre_list[]=$genre;
-		}
-	}
-	
-	$order_unique = array_values(array_unique($genre_list)); // then we extract the ones that are not repeated and then we reset their indexes.
-	
-	$newArray = [];
-	$tag_id = [];
-
-	//Once separated by categories, the indices are extracted.
-	foreach($movies as $key => $index) {
-		foreach($index["genre"] as $genre){
-			if(in_array($genre,$order_unique)) {
-				$tag_id[$genre]["id"][] = $key;
-			}
-		}
-	}
-
-	// Finally, information is extracted with the organized indices.
-	foreach($tag_id as $genre => $index) {
-		$newArray[$genre]["name"] = $genre;
-		$newSum = [];
-		foreach($index["id"] as $list => $ok){
-			$newSum[]=intval($movies[$ok]["runtime"]);
-			$newArray[$genre]["total_movies"] += 1;
-			$newArray[$genre]["average_minutes"] = "";
-			$newArray[$genre]["total_minutes"] = "";
-			$newArray[$genre]["movies"][$list]["title"] = $movies[$ok]["title"];
-			$newArray[$genre]["movies"][$list]["runtime"] = $movies[$ok]["runtime"];
-			$newArray[$genre]["movies"][$list]["year"] = $movies[$ok]["year"];
-			$newArray[$genre]["movies"][$list]["director"] = $movies[$ok]["director"];
-			$newArray[$genre]["movies"][$list]["writer"] = $movies[$ok]["writer"];
-			$newArray[$genre]["movies"][$list]["actors"] = $movies[$ok]["actors"];
-			$newArray[$genre]["movies"][$list]["plot"] = $movies[$ok]["plot"];
-			$newArray[$genre]["movies"][$list]["lenguage"] = $movies[$ok]["lenguage"];
 			
+			$row = count($newArray[$genre]["movies"]);
+			if(!array_key_exists($genre,$list[$genre]["total_movies"])) {	// check if array index exists
+				$list[$genre]["total_movies"]=0;
+			}
+			$newArray[$genre]["name"] = $genre;
+			$newArray[$genre]["total_movies"] += 1; // We add the interactions for each category
+
+			$total_movies[$genre][] = $list["runtime"]; // we keep the minutes of the movies in an array
+			$countArray = count($total_movies[$genre]); // we count the values
+			$sumArray = array_sum($total_movies[$genre]); //returns the sum of all the values in the array
+			$round_minute = round($sumArray/$countArray); // we round off the sum
+			$newArray[$genre]["average_minutes"] = $round_minute; 
+			$newArray[$genre]["total_minutes"] = $sumArray;
+			
+			$newArray[$genre]["movies"][$row]["title"] = $list["title"];
+			$newArray[$genre]["movies"][$row]["runtime"] = $list["runtime"];
+			$newArray[$genre]["movies"][$row]["year"] = $list["year"];
+			$newArray[$genre]["movies"][$row]["director"] = $list["director"];
+			$newArray[$genre]["movies"][$row]["writer"] = $list["writer"];
+			$newArray[$genre]["movies"][$row]["actors"] = $list["actors"];
+			$newArray[$genre]["movies"][$row]["plot"] = $list["plot"];
+			$newArray[$genre]["movies"][$row]["lenguage"] = $list["lenguage"];
 		}
-
-		$countArray = count($newSum); // we count the values
-		$sumArray = array_sum($newSum); //returns the sum of all the values in the array
-		$newArray[$genre]["average_minutes"] = round($sumArray/$countArray); //we average the array
-		$newArray[$genre]["total_minutes"] = $sumArray; // returns the sum
-		
 	}
-	// print_r($newArray);
-
+	
 	/*Ïmprime contenido del Json*/
 	// print_r(json_encode($movies, JSON_PRETTY_PRINT));
 
