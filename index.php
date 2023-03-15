@@ -59,14 +59,9 @@
 			}else{
 				$row = count($newArray[$genre]["movies"]);
 			}
-<<<<<<< HEAD
 			if(!isset($newArray[$genre]["total_movies"])) {	// check if array exists
 				$newArray[$genre]["total_movies"]=0;
-=======
-			if(!isset($list[$genre]["total_movies"])) {	// check if array exists
-				$list[$genre]["total_movies"]=0;
->>>>>>> c6795afa5d563d4339428fdd16c7e38feb95dbd8
-			}		
+			}
 			
 			$newArray[$genre]["name"] = $genre;
 			$newArray[$genre]["total_movies"] += 1; // We add the interactions for each category
