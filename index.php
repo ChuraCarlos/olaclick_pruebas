@@ -53,6 +53,7 @@
 	foreach($movies as $list) {
 		foreach($list["genre"] as $genre) {
 			
+			$newArray[$genre]["name"] = $genre;
 			
 			if(!isset($newArray[$genre]["movies"])) {	// check if array exists
 				$row = 0;
@@ -62,8 +63,8 @@
 			if(!isset($newArray[$genre]["total_movies"])) {	// check if array exists
 				$newArray[$genre]["total_movies"]=0;
 			}
+
 			
-			$newArray[$genre]["name"] = $genre;
 			$newArray[$genre]["total_movies"] += 1; // We add the interactions for each category
 
 			$total_movies[$genre][] = $list["runtime"]; // we keep the minutes of the movies in an array
